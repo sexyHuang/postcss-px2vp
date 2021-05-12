@@ -1,0 +1,12 @@
+{
+  "name": "postcss-px2vp",
+  "version": "1.0.0",
+  "description": "A CSS post-processor that converts px to viewport units (vw, vh, vmin, vmax).",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "Huang Jianyong <sexy.is.353016313@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  }
+}
