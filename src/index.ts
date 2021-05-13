@@ -1,4 +1,4 @@
-import type { Container, Declaration, PluginCreator, Rule } from 'postcss';
+import type { Container, Declaration, Plugin, Rule } from 'postcss';
 import getUnitRegexp from './pixel-unit-regexp';
 import { createPropListMatcher } from './prop-list-matcher';
 
@@ -153,6 +153,11 @@ const blacklistedSelector = (
     if (typeof rule === 'string') return selector.includes(rule);
     return rule.test(selector);
   });
+
+interface PluginCreator<PluginOptions> {
+  (options?: PluginOptions): Plugin;
+  postcss: true;
+}
 
 const px2vp: PluginCreator<Input> = options => {
   const landscapeRules: Rule[] = [];
