@@ -7,6 +7,8 @@
   "author": "Huang Jianyong <sexy.is.353016313@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^15.0.3",
+    "postcss": "^8.2.15",
     "typescript": "^4.2.4"
   }
 }

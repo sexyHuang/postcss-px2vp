@@ -71,7 +71,8 @@ export const filterPropList: {
   }
 };
 
-export function createPropListMatcher(propList: string[]) {
+const matcherMap = new Map<string, (prop: string) => boolean>();
+function _createPropListMatcher(propList: string[]) {
   var hasWild = propList.indexOf('*') > -1;
   var matchAll = hasWild && propList.length === 1;
   var lists = {
@@ -112,4 +113,11 @@ export function createPropListMatcher(propList: string[]) {
       )
     );
   };
+}
+
+export function createPropListMatcher(propList: string[]) {
+  const key = propList.join(',');
+  if (!matcherMap.has(key))
+    matcherMap.set(key, _createPropListMatcher(propList));
+  return matcherMap.get(key)!;
 }
