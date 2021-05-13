@@ -178,20 +178,6 @@ module.exports = {
 }
 ```
 
-## 测试
-
-为了跑测试案例, 你需要全局安装 `jasmine-node` :
-
-```
-$ npm install jasmine-node -g
-```
-
-然后输入下面的命令:
-
-```
-$ npm run test
-```
-
 ## Changelog
 
 变更日志在 [这](CHANGELOG.md).
@@ -202,4 +188,9 @@ $ npm run test
 
 ## 借鉴至
 
-- 本项目基本逻辑都是从[postcss-px-to-viewport](https://github.com/evrone/postcss-px-to-viewport/)的 clone 过来，本项目主要做了 typescript 重构和动态传参的修改。
+本项目基本逻辑都是从[postcss-px-to-viewport](https://github.com/evrone/postcss-px-to-viewport/)的 clone 过来。
+本项目主要做了如下工作：
+
+- 以 typescript 重构源码；
+- 添加参数动态化配置方法；
+- 以 Postcss 8 推荐的方法重写了插件声明形式。
