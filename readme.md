@@ -1,5 +1,7 @@
 # postcss-px-to-viewport
 
+[![npm version](https://badge.fury.io/js/postcss-px2vp.svg)](https://badge.fury.io/js/postcss-px2vp)
+
 将 px 单位转换为视口单位的 (vw, vh, vmin, vmax) 的 [PostCSS](https://github.com/postcss/postcss) 插件.
 
 ## 简介
@@ -123,7 +125,7 @@ $ yarn add -D postcss-px2vp
   - 如果传入的值是一个数组，那么数组里的值必须为正则
 - `landscape` (Boolean) 是否添加根据 `landscapeWidth` 生成的媒体查询条件 `@media (orientation: landscape)`
 - `landscapeUnit` (String) 横屏时使用的单位
-- `landscapeWidth` (Number) 横屏时使用的视口宽度
+- `landscapeWidth` (Number) 横屏时使用的视口宽度  
   **P.S. 所有参数都可以传入一个函数，动态改变参数**
   示例
 

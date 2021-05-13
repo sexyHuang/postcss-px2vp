@@ -23,6 +23,24 @@
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
+  "homepage": "https://github.com/sexyHuang/postcss-px2vp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sexyHuang/postcss-px2vp.git"
+  },
+  "keywords": [
+    "css",
+    "units",
+    "pixel",
+    "px",
+    "viewport",
+    "vw",
+    "vh",
+    "vmin",
+    "vmax",
+    "postcss",
+    "postcss-plugin"
+  ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
