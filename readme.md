@@ -1,9 +1,5 @@
 # postcss-px-to-viewport
 
-[![NPM version](https://badge.fury.io/js/postcss-px-to-viewport.svg)](http://badge.fury.io/js/postcss-px-to-viewport)
-
-[English](README.md) | 中文
-
 将 px 单位转换为视口单位的 (vw, vh, vmin, vmax) 的 [PostCSS](https://github.com/postcss/postcss) 插件.
 
 ## 简介
@@ -71,13 +67,13 @@
 使用 npm 安装
 
 ```
-$ npm install postcss-px-to-viewport --save-dev
+$ npm install postcss-px2vp --save-dev
 ```
 
 或者使用 yarn 进行安装
 
 ```
-$ yarn add -D postcss-px-to-viewport
+$ yarn add -D postcss-px2vp
 ```
 
 ### 配置参数
@@ -128,6 +124,18 @@ $ yarn add -D postcss-px-to-viewport
 - `landscape` (Boolean) 是否添加根据 `landscapeWidth` 生成的媒体查询条件 `@media (orientation: landscape)`
 - `landscapeUnit` (String) 横屏时使用的单位
 - `landscapeWidth` (Number) 横屏时使用的视口宽度
+  **P.S. 所有参数都可以传入一个函数，动态改变参数**
+  示例
+
+  ```typescript
+    {
+      viewportWidth(rule: PostCss.Rule){
+        const file = rule.source?.input.file;
+        if (file?.includes('main')) return 750;
+        return 375;
+      }
+    }
+  ```
 
 #### 直接在 gulp 中使用，添加 gulp-postcss
 
@@ -182,14 +190,6 @@ $ npm install jasmine-node -g
 $ npm run test
 ```
 
-## 参与贡献
-
-在提 PR 之前，请先阅读 [代码指南](CODE-OF-CONDUCT.md) 和 [贡献指南](CONTRIBUTING.md)
-
-## 版本跟踪
-
-使用 [SemVer](http://semver.org/) 做版本跟踪， 可用版本可在[这](https://github.com/evrone/postcss-px-to-viewport/tags)看到
-
 ## Changelog
 
 变更日志在 [这](CHANGELOG.md).
@@ -197,3 +197,7 @@ $ npm run test
 ## 许可
 
 本项目使用 [MIT License](LICENSE).
+
+## 借鉴指
+
+- 本项目基本逻辑都是从[postcss-px-to-viewport](https://github.com/evrone/postcss-px-to-viewport/)的 clone 过来，本项目主要做了 typescript 重构和动态传参的修改。

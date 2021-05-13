@@ -6,9 +6,30 @@
   "types": "dist/index.d.ts",
   "author": "Huang Jianyong <sexy.is.353016313@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
   "devDependencies": {
     "@types/node": "^15.0.3",
+    "husky": "^6.0.0",
     "postcss": "^8.2.15",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "lint-staged": "^10.5.3",
+    "prettier": "^2.2.1"
   }
 }
