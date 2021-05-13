@@ -1,4 +1,4 @@
-# postcss-px-to-viewport
+# postcss-px2vp
 
 [![npm version](https://badge.fury.io/js/postcss-px2vp.svg)](https://badge.fury.io/js/postcss-px2vp)
 
@@ -200,6 +200,6 @@ $ npm run test
 
 本项目使用 [MIT License](LICENSE).
 
-## 借鉴指
+## 借鉴至
 
 - 本项目基本逻辑都是从[postcss-px-to-viewport](https://github.com/evrone/postcss-px-to-viewport/)的 clone 过来，本项目主要做了 typescript 重构和动态传参的修改。
