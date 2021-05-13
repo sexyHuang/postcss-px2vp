@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w",
-    "publish": "yarn build && yarn sv -p --publish"
+    "release": "yarn build && yarn sv -p --publish"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
