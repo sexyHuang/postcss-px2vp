@@ -146,7 +146,7 @@ $ yarn add -D postcss-px2vp
 ```js
 var gulp = require('gulp');
 var postcss = require('gulp-postcss');
-var pxtoviewport = require('postcss-px-to-viewport');
+var pxtoviewport = require('postcss-px2vp');
 
 gulp.task('css', function () {
   var processors = [
@@ -171,7 +171,7 @@ gulp.task('css', function () {
 module.exports = {
   plugins: {
     ...
-    'postcss-px-to-viewport': {
+    'postcss-px2vp': {
       // options
     }
   }
