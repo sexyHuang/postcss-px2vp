@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.3](https://github.com/sexyHuang/postcss-px2vp/compare/v1.1.2...v1.1.3) (2022-03-08)
+
+
+### Bug Fixes
+
+* **#3:** 修复ignore comment 不生效问题 ([4ec1e30](https://github.com/sexyHuang/postcss-px2vp/commit/4ec1e301b8a6f1d88bfc281920ac6b4c78e77c18)), closes [#3](https://github.com/sexyHuang/postcss-px2vp/issues/3)
+
 ### [1.1.2](https://github.com/sexyHuang/postcss-px2vp/compare/v1.1.1...v1.1.2) (2021-05-13)
 
 ### [1.1.1](https://github.com/sexyHuang/postcss-px2vp/compare/v1.1.0...v1.1.1) (2021-05-13)
