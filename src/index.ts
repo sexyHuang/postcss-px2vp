@@ -65,6 +65,9 @@ const getDefault = () =>
 
 const postcssPlugin = 'postcss-px2vp';
 
+const IGNORE_NEXT_COMMENT = 'px-to-viewport-ignore-next';
+const IGNORE_PREV_COMMENT = 'px-to-viewport-ignore';
+
 type FunctionalOptions<T> = {
   [K in keyof T]: T[K] | ((rule: Rule) => T[K]);
 };
@@ -165,7 +168,7 @@ const px2vp: PluginCreator<Input> = options => {
 
   return {
     postcssPlugin,
-    Once(root, { atRule }) {
+    Once(root, { atRule, result }) {
       root.walkRules(rule => {
         const file = rule.source?.input.file;
 
@@ -223,6 +226,27 @@ const px2vp: PluginCreator<Input> = options => {
         rule.walkDecls((decl, i) => {
           let { value, prop } = decl;
           if (!value.includes(unitToConvert) || !satisfyPropList(prop)) return;
+
+          const prev = decl.prev();
+          if (prev?.type === 'comment' && prev.text === IGNORE_NEXT_COMMENT) {
+            prev.remove();
+            return;
+          }
+          const next = decl.next();
+          if (next?.type === 'comment' && next.text === IGNORE_PREV_COMMENT) {
+            if (/\n/.test(next.raws.before ?? '')) {
+              result.warn(
+                'Unexpected comment /* ' +
+                  IGNORE_PREV_COMMENT +
+                  ' */ must be after declaration at same line.',
+                { node: next }
+              );
+            } else {
+              // remove comment
+              next.remove();
+              return;
+            }
+          }
           const [unit, size] =
             landscape && params?.includes('landscape')
               ? [landscapeUnit, landscapeWidth]

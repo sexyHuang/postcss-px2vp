@@ -19,14 +19,13 @@
   font-size: 14px;
   line-height: 20px;
 }
-
 .class2 {
   border: 1px solid black;
   margin-bottom: 1px;
-  font-size: 20px;
+  font-size: 20px; /* px-to-viewport-ignore */
+  /* px-to-viewport-ignore-next */
   line-height: 30px;
 }
-
 @media (min-width: 750px) {
   .class3 {
     font-size: 16px;
@@ -39,27 +38,26 @@
 
 ```css
 .class {
-  margin: -3.125vw 0.5vh;
-  padding: 5vmin 2.96875vw 1px;
-  border: 0.9375vw solid black;
+  margin: -1.33333vw 0.5vh;
+  padding: 5vmin 1.26667vw 1px;
+  border: 0.4vw solid black;
   border-bottom-width: 1px;
-  font-size: 4.375vw;
-  line-height: 6.25vw;
+  font-size: 1.86667vw;
+  line-height: 2.66667vw;
 }
-
 .class2 {
   border: 1px solid black;
   margin-bottom: 1px;
-  font-size: 6.25vw;
-  line-height: 9.375vw;
+  font-size: 20px;
+  line-height: 30px;
 }
-
 @media (min-width: 750px) {
   .class3 {
-    font-size: 16px;
-    line-height: 22px;
+    font-size: 2.13333vw;
+    line-height: 2.93333vw;
   }
 }
+
 ```
 
 ## 上手
@@ -69,13 +67,13 @@
 使用 npm 安装
 
 ```
-$ npm install postcss-px2vp --save-dev
+npm install postcss-px2vp --save-dev
 ```
 
 或者使用 yarn 进行安装
 
 ```
-$ yarn add -D postcss-px2vp
+yarn add -D postcss-px2vp
 ```
 
 ### 配置参数
