@@ -1,116 +1,20 @@
-export const filterPropList: {
-  [key: string]: (list: string[]) => string[];
-} = {
-  exact: function (list) {
-    return list.filter(function (m) {
-      return m.match(/^[^\*\!]+$/);
-    });
-  },
-  contain: function (list) {
-    return list
-      .filter(function (m) {
-        return m.match(/^\*.+\*$/);
-      })
-      .map(function (m) {
-        return m.slice(1, -1);
-      });
-  },
-  endWith: function (list) {
-    return list
-      .filter(function (m) {
-        return m.match(/^\*[^\*]+$/);
-      })
-      .map(function (m) {
-        return m.slice(1);
-      });
-  },
-  startWith: function (list) {
-    return list
-      .filter(function (m) {
-        return m.match(/^[^\*\!]+\*$/);
-      })
-      .map(function (m) {
-        return m.slice(0, -1);
-      });
-  },
-  notExact: function (list) {
-    return list
-      .filter(function (m) {
-        return m.match(/^\![^\*].*$/);
-      })
-      .map(function (m) {
-        return m.slice(1);
-      });
-  },
-  notContain: function (list) {
-    return list
-      .filter(function (m) {
-        return m.match(/^\!\*.+\*$/);
-      })
-      .map(function (m) {
-        return m.slice(2, -1);
-      });
-  },
-  notEndWith: function (list) {
-    return list
-      .filter(function (m) {
-        return m.match(/^\!\*[^\*]+$/);
-      })
-      .map(function (m) {
-        return m.slice(2);
-      });
-  },
-  notStartWith: function (list) {
-    return list
-      .filter(function (m) {
-        return m.match(/^\![^\*]+\*$/);
-      })
-      .map(function (m) {
-        return m.slice(1, -1);
-      });
-  }
-};
+import { createPropValidator } from './propListFilter';
 
 const matcherMap = new Map<string, (prop: string) => boolean>();
 function _createPropListMatcher(propList: string[]) {
-  var hasWild = propList.indexOf('*') > -1;
-  var matchAll = hasWild && propList.length === 1;
-  var lists = {
-    exact: filterPropList.exact(propList),
-    contain: filterPropList.contain(propList),
-    startWith: filterPropList.startWith(propList),
-    endWith: filterPropList.endWith(propList),
-    notExact: filterPropList.notExact(propList),
-    notContain: filterPropList.notContain(propList),
-    notStartWith: filterPropList.notStartWith(propList),
-    notEndWith: filterPropList.notEndWith(propList)
-  };
+  const propValidator = createPropValidator(propList);
   return function (prop: string) {
-    if (matchAll) return true;
+    if (propValidator.matchAll) return true;
     return (
-      (hasWild ||
-        lists.exact.indexOf(prop) > -1 ||
-        lists.contain.some(function (m) {
-          return prop.indexOf(m) > -1;
-        }) ||
-        lists.startWith.some(function (m) {
-          return prop.indexOf(m) === 0;
-        }) ||
-        lists.endWith.some(function (m) {
-          return prop.indexOf(m) === prop.length - m.length;
-        })) &&
-      !(
-        lists.notExact.indexOf(prop) > -1 ||
-        lists.notContain.some(function (m) {
-          return prop.indexOf(m) > -1;
-        }) ||
-        lists.notStartWith.some(function (m) {
-          return prop.indexOf(m) === 0;
-        }) ||
-        lists.notEndWith.some(function (m) {
-          return prop.indexOf(m) === prop.length - m.length;
-        })
-      )
+      (propValidator.hasWild ||
+        propValidator.exact(prop) ||
+        propValidator.contain(prop) ||
+        propValidator.startWith(prop) ||
+        propValidator.endWith(prop)) &&
+      propValidator.notExact(prop) &&
+      propValidator.notContain(prop) &&
+      propValidator.notStartWith(prop) &&
+      propValidator.endWith(prop)
     );
   };
 }
