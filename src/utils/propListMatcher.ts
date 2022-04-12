@@ -14,7 +14,7 @@ function _createPropListMatcher(propList: string[]) {
       propValidator.notExact(prop) &&
       propValidator.notContain(prop) &&
       propValidator.notStartWith(prop) &&
-      propValidator.endWith(prop)
+      propValidator.notEndWith(prop)
     );
   };
 }
