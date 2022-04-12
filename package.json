@@ -9,7 +9,9 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w",
-    "release": "yarn build && yarn sv -p --publish"
+    "release": "yarn build && yarn sv -p --publish",
+    "test": "yarn jest --watch",
+    "utCoverage": "pnpm test -- --coverage a"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
@@ -47,12 +49,16 @@
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
+    "@types/jest": "^27.4.1",
     "@types/node": "^15.0.3",
     "hjy-sv": "^1.2.0",
     "husky": "^6.0.0",
+    "jest": "^27.5.1",
+    "jest-watch-typeahead": "0.6.5",
     "lint-staged": "^10.5.3",
     "postcss": "^8.2.15",
     "prettier": "^2.2.1",
+    "ts-jest": "^27.1.4",
     "typescript": "^4.2.4"
   },
   "dependencies": {
