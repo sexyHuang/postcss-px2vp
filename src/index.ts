@@ -4,10 +4,12 @@ import {
   IGNORE_PREV_COMMENT,
   POSTCSS_PLUGIN
 } from './const';
-
-import type { InputType, Option, ViewportUnit } from './type';
-import getUnitRegexp from './utils/getUnitRegexp';
+import type { InputType, Option } from './type';
+import createPxReplace from './utils/createPxReplace';
+import getUnitRegexp, { getUnit } from './utils/getUnitRegexp';
+import optionCreator from './utils/optionCreator';
 import { createPropListMatcher } from './utils/propListMatcher';
+import { blacklistedSelector, isExclude } from './utils/validators';
 
 const getDefault = () =>
   ({
@@ -28,51 +30,8 @@ const getDefault = () =>
     landscapeWidth: 568
   } as Required<Option>);
 
-const isExclude = (exclude: RegExp | RegExp[], file?: string) => {
-  if (!file) return false;
-  if (Array.isArray(exclude)) return exclude.some(reg => reg.test(file));
-  return exclude.test(file);
-};
-
-function getOption<T>(
-  option: T,
-  rule: Rule
-): T extends (rule: Rule) => infer K ? K : T {
-  return typeof option === 'function' ? option(rule) : option;
-}
-
-function toFixed(number: number, precision: number) {
-  const multiplier = Math.pow(10, precision + 1),
-    wholeNumber = Math.floor(number * multiplier);
-  return (Math.round(wholeNumber / 10) * 10) / multiplier;
-}
-
-function createPxReplace(
-  opts: { minPixelValue: number; unitPrecision: number },
-  viewportUnit: ViewportUnit,
-  viewportSize: number
-) {
-  return function (m: string, $1: string) {
-    if (!$1) return m;
-    const pixels = parseFloat($1);
-    if (pixels <= opts.minPixelValue) return m;
-    const parsedVal = toFixed(
-      (pixels / viewportSize) * 100,
-      opts.unitPrecision
-    );
-    return parsedVal === 0 ? '0' : `${parsedVal}${viewportUnit}`;
-  };
-}
-
 function validateParams(params: undefined | string, mediaQuery: boolean) {
   return !params || (params && mediaQuery);
-}
-
-function getUnit(
-  prop: string,
-  opts: { viewportUnit: ViewportUnit; fontViewportUnit: ViewportUnit }
-) {
-  return !prop.includes('font') ? opts.viewportUnit : opts.fontViewportUnit;
 }
 
 function declarationExists(
@@ -81,38 +40,10 @@ function declarationExists(
   value: string
 ) {
   if (!decls) return false;
-  return decls.some(function (decl: Declaration) {
-    return decl.prop === prop && decl.value === value;
-  });
+  return decls.some(
+    (decl: Declaration) => decl.prop === prop && decl.value === value
+  );
 }
-
-function optionCreator({
-  options,
-  rule,
-  defaultOptions
-}: {
-  options?: InputType;
-  rule: Rule;
-  defaultOptions: Required<Option>;
-}): Required<Option> {
-  if (!options) return defaultOptions;
-  return {
-    ...defaultOptions,
-    ...Object.entries(options).reduce((prev, [key, value]) => {
-      prev[key] = getOption(value, rule);
-      return prev;
-    }, {} as any)
-  };
-}
-
-const blacklistedSelector = (
-  blacklist: (string | RegExp)[],
-  selector: string
-) =>
-  blacklist.some(rule => {
-    if (typeof rule === 'string') return selector.includes(rule);
-    return rule.test(selector);
-  });
 
 const px2vp: PluginCreator<InputType> = options => {
   const landscapeRules: Rule[] = [];
@@ -124,6 +55,7 @@ const px2vp: PluginCreator<InputType> = options => {
       root.walkRules(rule => {
         const file = rule.source?.input.file;
 
+        // init options
         const {
           exclude,
           selectorBlackList,
@@ -140,7 +72,7 @@ const px2vp: PluginCreator<InputType> = options => {
           viewportWidth,
           replace
         } = optionCreator({ options, rule, defaultOptions });
-        // init options
+
         const pxRegex = getUnitRegexp(unitToConvert);
         const satisfyPropList = createPropListMatcher(propList);
         const params = (rule.parent as any)?.params as string | undefined;

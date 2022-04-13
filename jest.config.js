@@ -6,7 +6,11 @@ module.exports = {
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname'
   ],
-  collectCoverageFrom: ['src/**/*.{j,t}s?(x)', '!<rootDir>/node_modules/'],
+  collectCoverageFrom: [
+    'src/**/*.{j,t}s?(x)',
+    '!<rootDir>/node_modules/',
+    '!src/**/*.d.ts'
+  ],
   coverageThreshold: {
     global: {
       branches: 90,

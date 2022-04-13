@@ -10,7 +10,7 @@ const css = fs.readFileSync(inputPath, 'utf8');
 const processedCss = postcss(
   pxToViewport({
     mediaQuery: true,
-
+    landscape: true,
     viewportWidth(rule) {
       const file = rule.source?.input.file;
       if (file?.includes('main')) return 750;

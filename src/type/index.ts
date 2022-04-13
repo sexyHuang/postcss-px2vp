@@ -1,9 +1,9 @@
 import type { Rule } from 'postcss';
 import type { Simplify } from 'type-fest';
 
-export type ViewportUnit = 'vw' | 'vh' | 'vmin' | 'vmax';
+export declare type ViewportUnit = 'vw' | 'vh' | 'vmin' | 'vmax';
 
-export type Option = {
+export declare type Option = {
   /** 需要转换的单位，默认为"px" */
   unitToConvert?: string;
   /** 设计稿的视口宽度，默认为320 */
@@ -59,7 +59,9 @@ type FunctionalOptions<T, P extends any[] = []> = {
   [K in keyof T]: (...arg: P) => T[K];
 };
 
-export type InputType = UnionProps<
+export declare type InputType = UnionProps<
   Option,
   FunctionalOptions<Option, [rule: Rule]>
 >;
+
+export {};
