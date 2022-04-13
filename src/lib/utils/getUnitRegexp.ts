@@ -1,4 +1,4 @@
-import { ViewportUnit } from '../type';
+import { ViewportUnit } from '../../type';
 
 /**
  * Not anything inside double quotes;

@@ -1,38 +1,21 @@
 import type { Container, Declaration, PluginCreator, Rule } from 'postcss';
 import {
+  DEFAULT_OPTIONS,
   IGNORE_NEXT_COMMENT,
   IGNORE_PREV_COMMENT,
   POSTCSS_PLUGIN
 } from './const';
-import type { InputType, Option } from './type';
-import createPxReplace from './utils/createPxReplace';
-import getUnitRegexp, { getUnit } from './utils/getUnitRegexp';
-import optionCreator from './utils/optionCreator';
-import { createPropListMatcher } from './utils/propListMatcher';
-import { blacklistedSelector, isExclude } from './utils/validators';
-
-const getDefault = () =>
-  ({
-    unitToConvert: 'px',
-    viewportWidth: 320,
-    viewportHeight: 568, // not now used; TODO: need for different units and math for different properties
-    unitPrecision: 5,
-    viewportUnit: 'vw',
-    fontViewportUnit: 'vw', // vmin is more suitable.
-    selectorBlackList: [],
-    propList: ['*'],
-    minPixelValue: 1,
-    mediaQuery: false,
-    replace: true,
-    landscape: false,
-    landscapeUnit: 'vw',
-    exclude: [],
-    landscapeWidth: 568
-  } as Required<Option>);
-
-function validateParams(params: undefined | string, mediaQuery: boolean) {
-  return !params || (params && mediaQuery);
-}
+import createPxReplace from './lib/utils/createPxReplace';
+import getUnitRegexp, { getUnit } from './lib/utils/getUnitRegexp';
+import optionCreator from './lib/utils/optionCreator';
+import {
+  blacklistedSelector,
+  isExclude,
+  isInLandscapeMedia,
+  isInMedia
+} from './lib/validator';
+import { getPropValidator } from './lib/validator/propValidator';
+import type { InputType } from './type';
 
 function declarationExists(
   decls: Container | undefined,
@@ -47,14 +30,11 @@ function declarationExists(
 
 const px2vp: PluginCreator<InputType> = options => {
   const landscapeRules: Rule[] = [];
-  const defaultOptions = getDefault();
 
   return {
     postcssPlugin: POSTCSS_PLUGIN,
-    Once(root, { atRule, result }) {
+    Once(root, { result }) {
       root.walkRules(rule => {
-        const file = rule.source?.input.file;
-
         // init options
         const {
           exclude,
@@ -71,24 +51,37 @@ const px2vp: PluginCreator<InputType> = options => {
           mediaQuery,
           viewportWidth,
           replace
-        } = optionCreator({ options, rule, defaultOptions });
+        } = optionCreator({ options, defaultOptions: DEFAULT_OPTIONS, rule });
 
         const pxRegex = getUnitRegexp(unitToConvert);
-        const satisfyPropList = createPropListMatcher(propList);
-        const params = (rule.parent as any)?.params as string | undefined;
+        const propValidator = getPropValidator(propList);
+        const inMedia = isInMedia(rule);
+
+        /**
+         * 校验服务
+         *   1.跳过媒体查询（当mediaQuery为false）
+         *   2.跳过排除文件
+         *   3.跳过被忽略的选择器
+         */
         if (
-          isExclude(exclude, file) ||
+          (!mediaQuery && inMedia) ||
+          isExclude(exclude, rule.source?.input.file) ||
           blacklistedSelector(selectorBlackList, rule.selector)
         )
           return;
 
-        if (landscape && !params) {
+        /**
+         * 处理服务
+         *    1. 转屏处理
+         *    2. 注释忽略处理
+         *    3. pxToVw 处理
+         */
+        // 横屏处理
+        if (landscape && !inMedia) {
           const landscapeRule = rule.clone().removeAll();
           rule.walkDecls(decl => {
             const { value, prop } = decl;
-            if (!value.includes(unitToConvert) || !satisfyPropList(prop))
-              return;
-
+            if (!value.includes(unitToConvert) || !propValidator(prop)) return;
             landscapeRule.append(
               decl.clone({
                 value: value.replace(
@@ -106,10 +99,9 @@ const px2vp: PluginCreator<InputType> = options => {
             }
           });
         }
-        if (!validateParams(params, mediaQuery)) return;
         rule.walkDecls((decl, i) => {
           let { value, prop } = decl;
-          if (!value.includes(unitToConvert) || !satisfyPropList(prop)) return;
+          if (!value.includes(unitToConvert) || !propValidator(prop)) return;
           // 使用注释忽略
           const prev = decl.prev();
           if (prev?.type === 'comment' && prev.text === IGNORE_NEXT_COMMENT) {
@@ -131,8 +123,9 @@ const px2vp: PluginCreator<InputType> = options => {
               return;
             }
           }
+
           const [unit, size] =
-            landscape && params?.includes('landscape')
+            landscape && isInLandscapeMedia(rule)
               ? [landscapeUnit, landscapeWidth]
               : [
                   getUnit(prop, { viewportUnit, fontViewportUnit }),
@@ -147,16 +140,17 @@ const px2vp: PluginCreator<InputType> = options => {
           else decl.parent?.insertAfter(i, decl.clone({ value: value }));
         });
       });
-      if (landscapeRules.length) {
-        const landscapeRoot = atRule({
-          params: '(orientation: landscape)',
-          name: 'media'
-        });
-        landscapeRules.forEach(rule => {
-          landscapeRoot.append(rule);
-        });
-        root.append(landscapeRoot);
-      }
+    },
+    OnceExit(root, { atRule }) {
+      if (!landscapeRules.length) return;
+      const landscapeRoot = atRule({
+        params: '(orientation: landscape)',
+        name: 'media'
+      });
+      landscapeRules.forEach(rule => {
+        landscapeRoot.append(rule);
+      });
+      root.append(landscapeRoot);
     }
   };
 };

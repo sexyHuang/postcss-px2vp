@@ -1,7 +1,8 @@
+import { dropRepeats } from 'ramda';
 import { createPropValidator } from './propListFilter';
 
-const matcherMap = new Map<string, (prop: string) => boolean>();
-function _createPropListMatcher(propList: string[]) {
+const validatorMap = new Map<string, (prop: string) => boolean>();
+function createPropAllRuleValidator(propList: string[]) {
   const propValidator = createPropValidator(propList);
   return function (prop: string) {
     if (propValidator.matchAll) return true;
@@ -19,9 +20,9 @@ function _createPropListMatcher(propList: string[]) {
   };
 }
 
-export function createPropListMatcher(propList: string[]) {
-  const key = propList.join(',');
-  if (!matcherMap.has(key))
-    matcherMap.set(key, _createPropListMatcher(propList));
-  return matcherMap.get(key)!;
+export function getPropValidator(propList: string[]) {
+  const key = dropRepeats(propList.sort()).join(',');
+  if (!validatorMap.has(key))
+    validatorMap.set(key, createPropAllRuleValidator(propList));
+  return validatorMap.get(key)!;
 }

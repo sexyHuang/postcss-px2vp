@@ -9,6 +9,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w",
+    "demo": "ts-node example/index.ts",
     "release": "yarn build && yarn sv -p --publish",
     "test": "yarn jest --watch",
     "utCoverage": "pnpm test -- --coverage a"
@@ -51,6 +52,7 @@
     "@commitlint/config-conventional": "^11.0.0",
     "@types/jest": "^27.4.1",
     "@types/node": "^15.0.3",
+    "@types/ramda": "^0.28.9",
     "hjy-sv": "^1.2.0",
     "husky": "^6.0.0",
     "jest": "^27.5.1",
@@ -59,9 +61,11 @@
     "postcss": "^8.2.15",
     "prettier": "^2.2.1",
     "ts-jest": "^27.1.4",
+    "ts-node": "^10.7.0",
     "typescript": "^4.6.3"
   },
   "dependencies": {
+    "ramda": "^0.28.0",
     "type-fest": "^2.12.2"
   }
 }

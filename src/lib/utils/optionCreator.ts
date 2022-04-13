@@ -1,5 +1,5 @@
 import Rule from 'postcss/lib/rule';
-import { InputType, Option } from '../type';
+import { InputType, Option } from '../../type';
 
 function getOption<T>(
   option: T,
@@ -10,12 +10,12 @@ function getOption<T>(
 
 export default function optionCreator({
   options,
-  rule,
-  defaultOptions
+  defaultOptions,
+  rule
 }: {
   options?: InputType;
-  rule: Rule;
   defaultOptions: Required<Option>;
+  rule: Rule;
 }): Required<Option> {
   if (!options) return defaultOptions;
   return {

@@ -1,4 +1,4 @@
-import { ViewportUnit } from '../type';
+import { ViewportUnit } from '../../type';
 import toFixed from './toFixed';
 
 export default function createPxReplace(
