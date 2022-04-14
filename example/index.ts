@@ -11,6 +11,7 @@ const processedCss = postcss(
   pxToViewport({
     mediaQuery: true,
     landscape: true,
+    propList: ['*', '!*bottom*', '!font*'],
     viewportWidth(rule) {
       const file = rule.source?.input.file;
       if (file?.includes('main')) return 750;
